@@ -26,21 +26,21 @@ func boring(msg string) <-chan string {
 	return c
 }
 
+// fanIn combines values from c1 and c2 into a third channel c. 
+// order of values in c is dependent on the order in which values are received from c1 and c2
 func fanIn(c1, c2 <-chan string) <-chan string {
 	c := make(chan string)
 
 	go func(){
-		// infinite loop to read value from channel
 		for {
-			// read value from c1. This line will block until value is received
-			v1 := <-c1
-			c <- v1
+			// read value from c1
+			c <- <- c1
 		}
 
 	}()
 	go func(){
     for {
-			// read value from c2 and post value to c channel
+			// read value from c2
 			c <- <-c2
 		}
 	}()
