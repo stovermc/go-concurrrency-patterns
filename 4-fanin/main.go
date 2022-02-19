@@ -10,7 +10,7 @@ import (
 func boring(msg string) <-chan string {
 	c := make(chan string)
 
-	// spawn go routine inside function 
+	// spawn go routine inside function
 	go func() {
 
 		// this for loop simulates an infinite sender
@@ -26,20 +26,20 @@ func boring(msg string) <-chan string {
 	return c
 }
 
-// fanIn combines values from c1 and c2 into a third channel c. 
+// fanIn combines values from c1 and c2 into a third channel c.
 // order of values in c is dependent on the order in which values are received from c1 and c2
 func fanIn(c1, c2 <-chan string) <-chan string {
 	c := make(chan string)
 
-	go func(){
+	go func() {
 		for {
 			// read value from c1
-			c <- <- c1
+			c <- <-c1
 		}
 
 	}()
-	go func(){
-    for {
+	go func() {
+		for {
 			// read value from c2
 			c <- <-c2
 		}
@@ -48,9 +48,27 @@ func fanIn(c1, c2 <-chan string) <-chan string {
 	return c
 }
 
+func fanInSelect(c1, c2 <-chan string) <-chan string {
+	c := make(chan string)
+
+	go func() {
+		for {
+			select {
+			case s := <-c1:
+				c <- s
+			case s := <-c2:
+				c <- s
+			}
+		}
+	}()
+
+	return c
+}
+
 func main() {
 	// merge 2 channels into 1 channel
-	c := fanIn(boring("Joe"), boring("Sue"))
+	// c := fanIn(boring("Joe"), boring("Sue"))
+	c := fanInSelect(boring("Joe"), boring("Sue"))
 
 	for i := 0; i < 15; i++ {
 		// now we can read from 1 channel
