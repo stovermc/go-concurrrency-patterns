@@ -59,9 +59,9 @@ func main() {
 
 	for i := 0; i < 15; i++ {
 		msg1 := <-c
-		fmt.Println(msg1)
+		fmt.Println(msg1.str)
 		msg2 := <-c
-		fmt.Println(msg2)
+		fmt.Println(msg2.str)
 
 		// allows boring go routine to send next value to message channel	
 		msg1.wait <- true
