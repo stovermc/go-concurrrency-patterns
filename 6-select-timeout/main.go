@@ -6,12 +6,6 @@ import (
 	"time"
 )
 
-//
-type Message struct {
-	str  string
-	wait chan bool
-}
-
 // the boring function retuns a 'receive only' channel to communicate with it
 func boring(msg string) <-chan string {
 	c := make(chan string)
